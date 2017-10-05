@@ -1,6 +1,51 @@
 /*
  * Create a list that holds all of your cards
  */
+var deck = document.getElementById('deck');
+
+window.onload = function() {
+	var cards = [];
+	var cardsShuffled = [];
+
+	for (var i=0; i<deck.children.length; i++) {
+		deck.children[i].id = 'card' + i;
+		cards.push(deck.children[i]);
+	}
+	cardsShuffled = shuffle(cards);
+
+/*	for (var j=0; j<cardsShuffled.length; j++){
+		console.log(cardsShuffled[j].id);
+	}
+*/
+	//reset number of moves to zero
+}
+
+
+document.getElementById('deck').addEventListener('mousedown', function(event) {
+	var cardClickedId = event.target.id;
+	var cardClicked = document.getElementById(cardClickedId);
+	var firstCardOpened;
+	var secondCardOpened;
+
+	//console.log(cardClicked);
+	cardClicked.className += ' open show';
+	firstCardOpened = cardClicked.children[0].className;
+	console.log(firstCardOpened);
+
+	//for loop to check if there is any opened card (through class open show)
+	if(firstCardOpened === secondCardOpened) {
+		console.log("matched!");
+	}
+	else {
+		console.log("not matched!");
+	}
+
+
+
+})
+
+
+
 
 
 /*
