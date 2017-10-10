@@ -27,24 +27,46 @@ document.getElementById('deck').addEventListener('mousedown', function(event) {
     cardClicked.className += ' open show';
  
     //Store card info             
-    if (typeof firstCardOpenedImage === 'undefined') {
+    if (firstCardOpenedImage === undefined) {
         firstCardOpenedImage = cardClicked.children[0].className;
         firstCardOpenedId = cardClickedId;
     }
     else {
         secondCardOpenedImage = cardClicked.children[0].className;
         secondCardOpenedId = cardClickedId;
-        //debugger;
-    }
- 
-    //Compare whether 2 cards match
-    if (typeof firstCardOpenedImage !== 'undefined' && typeof secondCardOpenedImage !== 'undefined') {
+
+        //Compare whether cards match
         if (firstCardOpenedImage !== secondCardOpenedImage) {
-            document.getElementById(firstCardOpenedId).className = 'card';
-            document.getElementById(secondCardOpenedId).className = 'card';
+            setTimeout(function() {
+                document.getElementById(firstCardOpenedId).className = 'card';
+                document.getElementById(secondCardOpenedId).className = 'card';
+                firstCardOpenedImage = undefined;
+                firstCardOpenedId = undefined;
+                secondCardOpenedImage = undefined;
+                secondCardOpenedId = undefined;
+            }, 1000);
+        }
+        else {
+            setTimeout(function(){
+                document.getElementById(firstCardOpenedId).className = 'card match';
+                document.getElementById(secondCardOpenedId).className = 'card match';
+                firstCardOpenedImage = undefined;
+                firstCardOpenedId = undefined;
+                secondCardOpenedImage = undefined;
+                secondCardOpenedId = undefined;
+            }, 1000);
         }
     }
+
     
+
+    console.log("firstCardOpenedId = " , firstCardOpenedId);
+    console.log("firstCardOpenedImage = ", firstCardOpenedImage);
+    console.log("secondCardOpenedId = ", secondCardOpenedId);
+    console.log("secondCardOpenedImage = ", secondCardOpenedImage);
+ 
+    //debugger;
+
 })
  
  
