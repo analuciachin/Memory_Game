@@ -4,69 +4,106 @@
 var deck = document.getElementById('deck');
 var cards = [];
 var cardsShuffled = [];
-window.onload = function() {          
+window.onload = function() {         
     for (var i=0; i<deck.children.length; i++) {
         deck.children[i].id = 'card' + i;
         cards.push(deck.children[i]);
     }
     cardsShuffled = shuffle(cards);
+    //console.log(cardsShuffled);
  
     //reset number of moves to zero
  
+    function makeShuffleCards(arrayCards) {
+        //debugger;
+        var list = document.querySelector('ul.deck');
+ 
+        for(var i=0; i<deck.children.length; i++) {
+            var item = document.querySelector('li');
+            item = arrayCards[i];
+            list.appendChild(item);
+        }
+        return list;
+    }
+ 
+    makeShuffleCards(cardsShuffled);
+ 
 }
  
-var firstCardOpenedImage;
-var firstCardOpenedId;   
-var secondCardOpenedImage;       
+var firstCardOpenedSymbol;
+var firstCardOpenedId;  
+var secondCardOpenedSymbol;      
 var secondCardOpenedId;
+var moves = 0;
  
 document.getElementById('deck').addEventListener('mousedown', function(event) {
     var cardClickedId = event.target.id;
     var cardClicked = document.getElementById(cardClickedId);
+    var moveSpan = document.querySelector('span');
+    var starsUl = document.getElementById('stars');
+    moves += 1;
    
     cardClicked.className += ' open show';
  
-    //Store card info             
-    if (firstCardOpenedImage === undefined) {
-        firstCardOpenedImage = cardClicked.children[0].className;
-        firstCardOpenedId = cardClickedId;
-    }
-    else {
-        secondCardOpenedImage = cardClicked.children[0].className;
-        secondCardOpenedId = cardClickedId;
-
-        //Compare whether cards match
-        if (firstCardOpenedImage !== secondCardOpenedImage) {
-            setTimeout(function() {
-                document.getElementById(firstCardOpenedId).className = 'card';
-                document.getElementById(secondCardOpenedId).className = 'card';
-                firstCardOpenedImage = undefined;
-                firstCardOpenedId = undefined;
-                secondCardOpenedImage = undefined;
-                secondCardOpenedId = undefined;
-            }, 1000);
+    //Store card info
+    function openCards() { 
+        if (firstCardOpenedSymbol === undefined) {
+            firstCardOpenedSymbol = cardClicked.children[0].className;
+            firstCardOpenedId = cardClickedId;
         }
         else {
-            setTimeout(function(){
-                document.getElementById(firstCardOpenedId).className = 'card match';
-                document.getElementById(secondCardOpenedId).className = 'card match';
-                firstCardOpenedImage = undefined;
-                firstCardOpenedId = undefined;
-                secondCardOpenedImage = undefined;
-                secondCardOpenedId = undefined;
-            }, 1000);
+            secondCardOpenedSymbol = cardClicked.children[0].className;
+            secondCardOpenedId = cardClickedId;
         }
     }
-
+ 
+    //Compare whether cards match
+    function compareCards(){
+        if(firstCardOpenedSymbol !== undefined && secondCardOpenedSymbol !== undefined) {           
+            if (firstCardOpenedSymbol !== secondCardOpenedSymbol) {
+                setTimeout(function() {
+                    document.getElementById(firstCardOpenedId).className = 'card';
+                    document.getElementById(secondCardOpenedId).className = 'card';
+                    firstCardOpenedSymbol = undefined;
+                    firstCardOpenedId = undefined;
+                    secondCardOpenedSymbol = undefined;
+                    secondCardOpenedId = undefined;
+                }, 1000);
+            }
+            else {
+                setTimeout(function(){
+                    document.getElementById(firstCardOpenedId).className = 'card match';
+                    document.getElementById(secondCardOpenedId).className = 'card match';
+                    firstCardOpenedSymbol = undefined;
+                    firstCardOpenedId = undefined;
+                    secondCardOpenedSymbol = undefined;
+                    secondCardOpenedId = undefined;
+                }, 1000);
+            }
+        }
+    }
+ 
+    openCards();
+    compareCards();
+ 
+    if ((moves >= 2 && moves < 6) && starsUl.children.length === 3) {
+        //debugger;
+        starsUl.removeChild(starsUl.childNodes[0]);
+    }
+    else if (moves >= 6 && starsUl.children.length === 2) {
+        starsUl.removeChild(starsUl.childNodes[0]);
+    }
+   
     
-
-    console.log("firstCardOpenedId = " , firstCardOpenedId);
-    console.log("firstCardOpenedImage = ", firstCardOpenedImage);
-    console.log("secondCardOpenedId = ", secondCardOpenedId);
-    console.log("secondCardOpenedImage = ", secondCardOpenedImage);
+    moveSpan.innerHTML = moves;
+ 
+    //console.log("firstCardOpenedId = " , firstCardOpenedId);
+    //console.log("firstCardOpenedSymbol = ", firstCardOpenedSymbol);
+    //console.log("secondCardOpenedId = ", secondCardOpenedId);
+    //console.log("secondCardOpenedSymbol = ", secondCardOpenedSymbol);
  
     //debugger;
-
+ 
 })
  
  
