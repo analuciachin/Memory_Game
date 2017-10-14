@@ -37,7 +37,6 @@ document.getElementById('deck').addEventListener('mousedown', function(event) {
     var cardClicked = document.getElementById(cardClickedId);
     var moveSpan = document.querySelector('span');
     var starsUl = document.getElementById('stars');  
-    
     cardClicked.className += ' open show';
   
     //Store card info
@@ -47,17 +46,16 @@ document.getElementById('deck').addEventListener('mousedown', function(event) {
         moves += 1;
         countMoves();
     }
-    else if (firstCardOpenedSymbol !== undefined && firstCardOpenedId !== cardClickedId) {
-        //firstCardOpenedId !== cardClickedId - prevents double clicking on the same card
+    else if (firstCardOpenedSymbol !== undefined && secondCardOpenedSymbol === undefined 
+        && firstCardOpenedId !== cardClickedId) {
+        
+        /* secondCardOpenedSymbol === undefined 
+        ** && firstCardOpenedId !== cardClickedId - prevents double clicking on the same card
+        */
         secondCardOpenedSymbol = cardClicked.children[0].className;
         secondCardOpenedId = cardClickedId;
- 
-        //prevents fast clicks to be counted in the moves variable
-        debounce(function() {
-            moves += 1;
-            countMoves();
-        }, 1000);
-       
+        moves += 1;
+        countMoves();
  
         //Compare whether cards match
         if (firstCardOpenedSymbol !== secondCardOpenedSymbol) {
@@ -81,6 +79,7 @@ document.getElementById('deck').addEventListener('mousedown', function(event) {
                 cardsMatched = cardsMatched + 2;
                 if(cardsMatched === 2) {
                     document.getElementById('gameScore').style.display = 'block';
+                    showResults();
                 }
             }, 1000);
         }
@@ -99,6 +98,16 @@ document.getElementById('deck').addEventListener('mousedown', function(event) {
         }
         moveSpan.innerHTML = moves;
     }
+
+    function showResults() {
+        var starResult = document.querySelector('span.starModal');
+        var movesResult = document.querySelector('span.movesModal');
+
+        movesResult.innerHTML = moves;
+        starResult.innerHTML = starsUl.children.length;
+    }
+
+
     console.log("firstCardOpenedId = " , firstCardOpenedId);
     console.log("firstCardOpenedSymbol = ", firstCardOpenedSymbol);
     console.log("secondCardOpenedId = ", secondCardOpenedId);
@@ -130,32 +139,7 @@ function shuffle(array) {
     }
     return array;
 }
- 
- 
-/* 
-* Returns a function, that, as long as it continues to be invoked, will not
-*  be triggered. The function will be called after it stops being called for
-*  N milliseconds. If 'immediate' is passed, trigger the function on the
-*  leading edge, instead of the trailing.
-*/
-// Debounce function from https://davidwalsh.name/javascript-debounce-function
- 
-function debounce(func, wait, immediate) {
-    var timeout;
-    return function() {
-        var context = this, args = arguments;
-        var later = function() {
-            timeout = null;
-            if (!immediate) func.apply(context, args);
-        };
-        var callNow = immediate && !timeout;
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-        if (callNow) func.apply(context, args);
-    };
-};
- 
- 
+  
  
 //Modal function from https://www.w3schools.com/howto/howto_css_modals.asp
  
