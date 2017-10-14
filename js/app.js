@@ -4,17 +4,16 @@
 var deck = document.getElementById('deck');
 var cards = [];
 var cardsShuffled = [];
-
-window.onload = function() {         
+ 
+window.onload = function() {        
     for (var i=0; i<deck.children.length; i++) {
         deck.children[i].id = 'card' + i;
         cards.push(deck.children[i]);
     }
     cardsShuffled = shuffle(cards);
-    
+   
     function makeShuffleCards(arrayCards) {
         var list = document.querySelector('ul.deck');
- 
         for(var i=0; i<deck.children.length; i++) {
             var item = document.querySelector('li');
             item = arrayCards[i];
@@ -22,35 +21,44 @@ window.onload = function() {
         }
         return list;
     }
- 
     makeShuffleCards(cardsShuffled);
 }
- 
+
+
 var firstCardOpenedSymbol;
-var firstCardOpenedId;  
-var secondCardOpenedSymbol;      
+var firstCardOpenedId; 
+var secondCardOpenedSymbol;     
 var secondCardOpenedId;
 var moves = 0;
 var cardsMatched = 0;
- 
+
 document.getElementById('deck').addEventListener('mousedown', function(event) {
     var cardClickedId = event.target.id;
     var cardClicked = document.getElementById(cardClickedId);
     var moveSpan = document.querySelector('span');
-    var starsUl = document.getElementById('stars');
-    moves += 1;    
+    var starsUl = document.getElementById('stars');  
     
     cardClicked.className += ' open show';
- 
-    //Store card info 
+  
+    //Store card info
     if (firstCardOpenedSymbol === undefined) {
         firstCardOpenedSymbol = cardClicked.children[0].className;
         firstCardOpenedId = cardClickedId;
+        moves += 1;
+        countMoves();
     }
     else if (firstCardOpenedSymbol !== undefined && firstCardOpenedId !== cardClickedId) {
-        //firstCardOpenedId !== cardClickedId - prevents double clicking the same card
+        //firstCardOpenedId !== cardClickedId - prevents double clicking on the same card
         secondCardOpenedSymbol = cardClicked.children[0].className;
         secondCardOpenedId = cardClickedId;
+ 
+        //prevents fast clicks to be counted in the moves variable
+        debounce(function() {
+            moves += 1;
+            countMoves();
+        }, 1000);
+       
+ 
         //Compare whether cards match
         if (firstCardOpenedSymbol !== secondCardOpenedSymbol) {
             setTimeout(function() {
@@ -66,42 +74,43 @@ document.getElementById('deck').addEventListener('mousedown', function(event) {
             setTimeout(function(){
                 document.getElementById(firstCardOpenedId).className = 'card match';
                 document.getElementById(secondCardOpenedId).className = 'card match';
-                cardsMatched = cardsMatched + 2;
                 firstCardOpenedSymbol = undefined;
                 firstCardOpenedId = undefined;
                 secondCardOpenedSymbol = undefined;
                 secondCardOpenedId = undefined;
+                cardsMatched = cardsMatched + 2;
+                if(cardsMatched === 2) {
+                    document.getElementById('gameScore').style.display = 'block';
+                }
             }, 1000);
         }
-            
+           
     }
-
-
-    if ((moves >= 2 && moves < 6) && starsUl.children.length === 3) {
-        //debugger;
-        starsUl.removeChild(starsUl.childNodes[0]);
+ 
+ 
+    function countMoves() {
+        if ((moves >= 2 && moves < 6) && starsUl.children.length === 3
+            && firstCardOpenedId !== secondCardOpenedId) {
+            starsUl.removeChild(starsUl.childNodes[0]);
+        }
+        else if (moves >= 6 && starsUl.children.length === 2
+            && firstCardOpenedId !== secondCardOpenedId) {
+            starsUl.removeChild(starsUl.childNodes[0]);
+        }
+        moveSpan.innerHTML = moves;
     }
-    else if (moves >= 6 && starsUl.children.length === 2) {
-        starsUl.removeChild(starsUl.childNodes[0]);
-    }
-    moveSpan.innerHTML = moves;
-    
-    //console.log("firstCardOpenedId = " , firstCardOpenedId);
-    //console.log("firstCardOpenedSymbol = ", firstCardOpenedSymbol);
-    //console.log("secondCardOpenedId = ", secondCardOpenedId);
-    //console.log("secondCardOpenedSymbol = ", secondCardOpenedSymbol);
-    
-    if(cardsMatched === 4) {
-        document.getElementById('gameScore').style.display = 'block';
-    } 
+    console.log("firstCardOpenedId = " , firstCardOpenedId);
+    console.log("firstCardOpenedSymbol = ", firstCardOpenedSymbol);
+    console.log("secondCardOpenedId = ", secondCardOpenedId);
+    console.log("secondCardOpenedSymbol = ", secondCardOpenedSymbol);
+   
+ 
 })
  
-
-
+ 
 document.getElementById('restart').addEventListener('mousedown', function(event) {
     window.location.reload();
-}) 
- 
+})
  
 /*
 * Display the cards on the page
@@ -121,19 +130,52 @@ function shuffle(array) {
     }
     return array;
 }
-
-
-
+ 
+ 
+/* 
+* Returns a function, that, as long as it continues to be invoked, will not
+*  be triggered. The function will be called after it stops being called for
+*  N milliseconds. If 'immediate' is passed, trigger the function on the
+*  leading edge, instead of the trailing.
+*/
+// Debounce function from https://davidwalsh.name/javascript-debounce-function
+ 
+function debounce(func, wait, immediate) {
+    var timeout;
+    return function() {
+        var context = this, args = arguments;
+        var later = function() {
+            timeout = null;
+            if (!immediate) func.apply(context, args);
+        };
+        var callNow = immediate && !timeout;
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+        if (callNow) func.apply(context, args);
+    };
+};
+ 
+ 
+ 
+//Modal function from https://www.w3schools.com/howto/howto_css_modals.asp
+ 
 // Get the modal
 var modal = document.getElementById('gameScore');
-
+ 
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+ 
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+    modal.style.display = "none";
+}
+ 
 // When the user clicks anywhere outside of the modal, close it
 window.onclick = function(event) {
     if (event.target == modal) {
         modal.style.display = "none";
     }
 }
-
  
 /*
 * set up the event listener for a card. If a card is clicked:
@@ -145,3 +187,5 @@ window.onclick = function(event) {
 *    + increment the move counter and display it on the page (put this functionality in another function that you call from this one)
 *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
 */
+ 
+ 
