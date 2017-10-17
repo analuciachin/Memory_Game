@@ -25,6 +25,19 @@ window.onload = function() {
 }
 
 
+
+var timerVar = setInterval(countTimer, 1000); 
+var totalSeconds = 0;
+// Count up timer which shows minute:second
+function countTimer() {
+    ++totalSeconds;
+    var minute = ('0'+ Math.floor(totalSeconds/60)).slice(-2);
+    var seconds = ('0'+ (totalSeconds - minute*60)).slice(-2);
+
+    document.getElementById("timer").innerHTML = minute + ":" + seconds;
+}
+
+
 var firstCardOpenedSymbol;
 var firstCardOpenedId; 
 var secondCardOpenedSymbol;     
@@ -36,15 +49,16 @@ document.getElementById('deck').addEventListener('mousedown', function(event) {
     var cardClickedId = event.target.id;
     var cardClicked = document.getElementById(cardClickedId);
     var moveSpan = document.querySelector('span');
-    var starsUl = document.getElementById('stars');  
+    var starsUl = document.getElementById('stars');   
     cardClicked.className += ' open show';
-  
+    
     //Store card info
     if (firstCardOpenedSymbol === undefined) {
         firstCardOpenedSymbol = cardClicked.children[0].className;
         firstCardOpenedId = cardClickedId;
         moves += 1;
         countMoves();
+        //countTimer();
     }
     else if (firstCardOpenedSymbol !== undefined && secondCardOpenedSymbol === undefined 
         && firstCardOpenedId !== cardClickedId) {
@@ -80,12 +94,14 @@ document.getElementById('deck').addEventListener('mousedown', function(event) {
                 if(cardsMatched === 2) {
                     document.getElementById('gameScore').style.display = 'block';
                     showResults();
+                    clearInterval(timerVar);
                 }
             }, 1000);
         }
            
     }
  
+
  
     function countMoves() {
         if ((moves >= 2 && moves < 6) && starsUl.children.length === 3
@@ -102,21 +118,25 @@ document.getElementById('deck').addEventListener('mousedown', function(event) {
     function showResults() {
         var starResult = document.querySelector('span.starModal');
         var movesResult = document.querySelector('span.movesModal');
+        var timerResult = document.querySelector('span.timerModal');
 
         movesResult.innerHTML = moves;
         starResult.innerHTML = starsUl.children.length;
+        timerResult.innerHTML = document.getElementById("timer").innerHTML;
     }
 
 
-    console.log("firstCardOpenedId = " , firstCardOpenedId);
-    console.log("firstCardOpenedSymbol = ", firstCardOpenedSymbol);
-    console.log("secondCardOpenedId = ", secondCardOpenedId);
-    console.log("secondCardOpenedSymbol = ", secondCardOpenedSymbol);
-   
+    //console.log("firstCardOpenedId = " , firstCardOpenedId);
+    //console.log("firstCardOpenedSymbol = ", firstCardOpenedSymbol);
+    //console.log("secondCardOpenedId = ", secondCardOpenedId);
+    //console.log("secondCardOpenedSymbol = ", secondCardOpenedSymbol);
+    
+    
+
  
 })
- 
- 
+
+  
 document.getElementById('restart').addEventListener('mousedown', function(event) {
     window.location.reload();
 })
