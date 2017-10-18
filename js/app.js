@@ -45,7 +45,7 @@ var secondCardOpenedId;
 var moves = 0;
 var cardsMatched = 0;
 
-document.getElementById('deck').addEventListener('mousedown', function(event) {
+document.getElementById('deck').addEventListener('click', function(event) {
     var cardClickedId = event.target.id;
     var cardClicked = document.getElementById(cardClickedId);
     var moveSpan = document.querySelector('span');
@@ -99,8 +99,7 @@ document.getElementById('deck').addEventListener('mousedown', function(event) {
             }, 1000);
         }
            
-    }
- 
+    } 
 
  
     function countMoves() {
@@ -131,13 +130,10 @@ document.getElementById('deck').addEventListener('mousedown', function(event) {
     //console.log("secondCardOpenedId = ", secondCardOpenedId);
     //console.log("secondCardOpenedSymbol = ", secondCardOpenedSymbol);
     
-    
-
- 
 })
 
   
-document.getElementById('restart').addEventListener('mousedown', function(event) {
+document.getElementById('restart').addEventListener('click', function(event) {
     window.location.reload();
 })
  
@@ -161,25 +157,28 @@ function shuffle(array) {
 }
   
  
-//Modal function from https://www.w3schools.com/howto/howto_css_modals.asp
+//Modal popup
  
-// Get the modal
 var modal = document.getElementById('gameScore');
- 
-// Get the <span> element that closes the modal
-var span = document.getElementsByClassName("close")[0];
- 
-// When the user clicks on <span> (x), close the modal
-span.onclick = function() {
-    modal.style.display = "none";
-}
+//var span = document.getElementsByClassName('close')[0];
+var noButton = document.getElementById('noButton');
+var yesButton = document.getElementById('yesButton'); 
+
+noButton.addEventListener('click', function() {
+    modal.style.display = 'none';
+    document.getElementById('gameOver').style.display = 'block';
+})
+
+yesButton.addEventListener('click', function() {
+    window.location.reload();
+})
  
 // When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
-    if (event.target == modal) {
-        modal.style.display = "none";
-    }
-}
+//window.addEventListener('click', function(event) {
+//    if (event.target == modal) {
+//        modal.style.display = 'none';
+//    }
+//})
  
 /*
 * set up the event listener for a card. If a card is clicked:
