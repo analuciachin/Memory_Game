@@ -84,14 +84,14 @@ document.getElementById('deck').addEventListener('click', function(event) {
         }
         else {
             setTimeout(function(){
-                document.getElementById(firstCardOpenedId).className = 'card match';
-                document.getElementById(secondCardOpenedId).className = 'card match';
+                document.getElementById(firstCardOpenedId).className = 'card match match-animation';
+                document.getElementById(secondCardOpenedId).className = 'card match match-animation';
                 firstCardOpenedSymbol = undefined;
                 firstCardOpenedId = undefined;
                 secondCardOpenedSymbol = undefined;
                 secondCardOpenedId = undefined;
                 cardsMatched = cardsMatched + 2;
-                if(cardsMatched === 2) {
+                if(cardsMatched === 4) {
                     document.getElementById('gameScore').style.display = 'block';
                     showResults();
                     clearInterval(timerVar);
