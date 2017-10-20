@@ -1,5 +1,5 @@
 /*
-* Create a list that holds all of your cards
+* Create a list that holds all cards
 */
 var deck = document.getElementById('deck');
 var cards = [];
@@ -25,10 +25,11 @@ window.onload = function() {
 }
 
 
-
+/*
+* Count up timer which shows minute:second in the format 00:00
+*/
 var timerVar = setInterval(countTimer, 1000); 
 var totalSeconds = 0;
-// Count up timer which shows minute:second
 function countTimer() {
     ++totalSeconds;
     var minute = ('0'+ Math.floor(totalSeconds/60)).slice(-2);
@@ -51,26 +52,26 @@ document.getElementById('deck').addEventListener('click', function(event) {
     var moveSpan = document.querySelector('span');
     var starsUl = document.getElementById('stars');   
     cardClicked.className += ' open show';
-    
+
     //Store card info
     if (firstCardOpenedSymbol === undefined) {
         firstCardOpenedSymbol = cardClicked.children[0].className;
         firstCardOpenedId = cardClickedId;
         moves += 1;
         countMoves();
-        //countTimer();
     }
     else if (firstCardOpenedSymbol !== undefined && secondCardOpenedSymbol === undefined 
         && firstCardOpenedId !== cardClickedId) {
-        
-        /* secondCardOpenedSymbol === undefined 
-        ** && firstCardOpenedId !== cardClickedId - prevents double clicking on the same card
+        /*
+        * To prevent double clicking on the same card
+        * secondCardOpenedSymbol === undefined && firstCardOpenedId !== cardClickedId
         */
         secondCardOpenedSymbol = cardClicked.children[0].className;
         secondCardOpenedId = cardClickedId;
         moves += 1;
         countMoves();
- 
+        
+
         //Compare whether cards match
         if (firstCardOpenedSymbol !== secondCardOpenedSymbol) {
             setTimeout(function() {
@@ -91,7 +92,7 @@ document.getElementById('deck').addEventListener('click', function(event) {
                 secondCardOpenedSymbol = undefined;
                 secondCardOpenedId = undefined;
                 cardsMatched = cardsMatched + 2;
-                if(cardsMatched === 4) {
+                if(cardsMatched === 16) {
                     document.getElementById('gameScore').style.display = 'block';
                     showResults();
                     clearInterval(timerVar);
@@ -103,15 +104,15 @@ document.getElementById('deck').addEventListener('click', function(event) {
 
  
     function countMoves() {
-        if ((moves >= 2 && moves < 6) && starsUl.children.length === 3
-            && firstCardOpenedId !== secondCardOpenedId) {
-            starsUl.removeChild(starsUl.childNodes[0]);
-        }
-        else if (moves >= 6 && starsUl.children.length === 2
-            && firstCardOpenedId !== secondCardOpenedId) {
-            starsUl.removeChild(starsUl.childNodes[0]);
-        }
         moveSpan.innerHTML = moves;
+        if ((moves > 20 && moves < 28) && starsUl.children.length === 3
+            && firstCardOpenedId !== secondCardOpenedId) {
+            starsUl.removeChild(starsUl.children[0]);
+        }
+        else if (moves >= 28 && starsUl.children.length === 2
+            && firstCardOpenedId !== secondCardOpenedId) {
+            starsUl.removeChild(starsUl.children[0]);
+        }
     }
 
     function showResults() {
@@ -123,16 +124,13 @@ document.getElementById('deck').addEventListener('click', function(event) {
         starResult.innerHTML = starsUl.children.length;
         timerResult.innerHTML = document.getElementById("timer").innerHTML;
     }
-
-
-    //console.log("firstCardOpenedId = " , firstCardOpenedId);
-    //console.log("firstCardOpenedSymbol = ", firstCardOpenedSymbol);
-    //console.log("secondCardOpenedId = ", secondCardOpenedId);
-    //console.log("secondCardOpenedSymbol = ", secondCardOpenedSymbol);
     
 })
 
-  
+
+/*
+* Reload the page with the restart icon
+*/  
 document.getElementById('restart').addEventListener('click', function(event) {
     window.location.reload();
 })
@@ -157,38 +155,19 @@ function shuffle(array) {
 }
   
  
-//Modal popup
- 
+/*
+* Modal popup
+*/ 
 var modal = document.getElementById('gameScore');
-//var span = document.getElementsByClassName('close')[0];
 var noButton = document.getElementById('noButton');
 var yesButton = document.getElementById('yesButton'); 
+var gameOver = document.getElementById('gameOver');
 
 noButton.addEventListener('click', function() {
     modal.style.display = 'none';
-    document.getElementById('gameOver').style.display = 'block';
+    gameOver.style.display = 'block';
 })
 
 yesButton.addEventListener('click', function() {
     window.location.reload();
 })
- 
-// When the user clicks anywhere outside of the modal, close it
-//window.addEventListener('click', function(event) {
-//    if (event.target == modal) {
-//        modal.style.display = 'none';
-//    }
-//})
- 
-/*
-* set up the event listener for a card. If a card is clicked:
-*  - display the card's symbol (put this functionality in another function that you call from this one)
-*  - add the card to a *list* of "open" cards (put this functionality in another function that you call from this one)
-*  - if the list already has another card, check to see if the two cards match
-*    + if the cards do match, lock the cards in the open position (put this functionality in another function that you call from this one)
-*    + if the cards do not match, remove the cards from the list and hide the card's symbol (put this functionality in another function that you call from this one)
-*    + increment the move counter and display it on the page (put this functionality in another function that you call from this one)
-*    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
-*/
- 
- 
